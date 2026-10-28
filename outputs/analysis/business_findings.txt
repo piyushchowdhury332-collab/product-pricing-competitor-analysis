@@ -1,0 +1,23 @@
+PRODUCT PRICING & COMPETITOR ANALYSIS: FINDINGS
+Dataset type: synthetic demonstration data
+These findings describe the generated dataset only. They are not actual market evidence and do not prove causation.
+
+Observation rows: 2,880
+Unique products: 120
+Categories: 6
+Competitors: 4
+Observation dates: 6
+Overall average selling price: INR 4,227.70
+Overall median selling price: INR 1,759.50
+
+Highest average-price category: Electronics (INR 11,197.38)
+Lowest average-price competitor: MarketOne (INR 3,919.33)
+Highest average-discount competitor: ValueCart (20.83%)
+Highest-revenue category in simulated data: Electronics (INR 99,221,354.00)
+Price-rating Pearson correlation: -0.083
+Price-review-count Pearson correlation: 0.056
+
+Interpretation notes:
+- Correlation describes association, not causation.
+- Competitor averages are descriptive; matched product comparisons should be used for stronger fairness.
+- Simulated units sold cannot establish real-world price elasticity.

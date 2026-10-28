@@ -1,0 +1,15 @@
+KPI,Value,Definition
+Total dataset observations,2880,"Rows across product, competitor and date observations"
+Unique products,120,Distinct Product_ID values
+Number of categories,6,Distinct categories
+Number of competitors,4,Distinct competitors
+Average selling price (INR),4227.7,Mean Price across all observations
+Median selling price (INR),1759.5,Median Price across all observations
+Average discount (%),20.39,Mean Discount_Percent across all observations
+Average rating (out of 5),4.11,Mean Rating across all observations
+Average review count,5748.84,Mean Review_Count across all observations
+Total simulated units sold across observations,214015,Synthetic Units_Sold summed across rows; not real-world sales
+Total simulated revenue across observations (INR),350408001.0,Synthetic Revenue summed across rows; not real-world revenue
+Lowest average-price competitor,MarketOne,Competitor with lowest mean Price
+Highest average-price category,Electronics,Category with highest mean Price
+Highest average-discount competitor,ValueCart,Competitor with highest mean Discount_Percent

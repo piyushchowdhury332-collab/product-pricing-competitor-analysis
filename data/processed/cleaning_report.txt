@@ -1,0 +1,24 @@
+PRODUCT PRICING DATA CLEANING REPORT
+Dataset type: Synthetic demonstration data
+
+input_rows: 2880
+missing_cells_before_cleaning: 0
+rows_removed_missing_identifiers_or_invalid_date: 0
+duplicate_business_keys_removed: 0
+rows_removed_invalid_count_metrics: 0
+rows_removed_invalid_price_or_rating: 0
+output_rows: 2880
+rows_removed_total: 0
+missing_cells_after_cleaning: 0
+
+FINAL DATASET SUMMARY
+Rows: 2880
+Columns: 17
+Categories: 6
+Competitors: 4
+Unique products: 120
+Observation dates: 6
+Minimum selling price: INR 63
+Maximum selling price: INR 45,671
+
+Note: all records and values are simulated and are not actual market data.
