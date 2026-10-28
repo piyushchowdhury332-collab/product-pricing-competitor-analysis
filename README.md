@@ -55,3 +55,4 @@ python -m streamlit run app.py
 ```
 
 The dashboard reads `data/processed/cleaned_data.csv`, supports category, competitor, brand and date filters, and shows interactive summaries, comparisons, trends, and product-level exploration. Static charts are also viewable. All data is synthetic and sales/revenue are simulated.
+# product-pricing-competitor-analysis
