@@ -1,0 +1,9 @@
+relationship b24a5524-6c42-4b94-80a6-af4026ecafea
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Products.Date
+	toColumn: LocalDateTable_91a4888b-e8de-4457-89ce-bba2f87b8c9d.Date
+
+relationship Products_Date_to_Dim_Date
+	fromColumn: Products.Date
+	toColumn: Dim_Date.Date
+

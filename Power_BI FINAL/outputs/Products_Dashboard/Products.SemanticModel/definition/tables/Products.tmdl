@@ -1,0 +1,1063 @@
+table Products
+	lineageTag: 057ac9dd-4093-4ba2-a8e9-19e268d5dc18
+
+	measure 'Total Products' =
+			
+			DISTINCTCOUNT(Products[Product_ID])
+		formatString: 0
+		lineageTag: 29e5f406-f246-464c-8d46-671c1d8bebc8
+
+	measure 'Total Observations' =
+			
+			COUNTROWS(Products)
+		formatString: 0
+		lineageTag: d31b9ab3-cf36-42b5-a9ce-f70217c63757
+
+	measure 'Average Price' =
+			
+			AVERAGE(Products[Price])
+		lineageTag: 6af79190-bb1a-44a1-aa72-57b5cfc9f418
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Rating' =
+			
+			AVERAGE(Products[Rating])
+		formatString: 0.00
+		lineageTag: 95f4e708-24ca-486e-ada2-f99cbb272f6a
+
+	measure 'Average Discount %' =
+			
+			DIVIDE(
+			    AVERAGE(Products[Discount_Percent]),
+			    100
+			)
+		formatString: 0.0%
+		lineageTag: 59254fbd-2783-4234-914c-71f5e9b238fc
+
+	measure 'Total Revenue' =
+			
+			SUM(Products[Revenue])
+		formatString: #,0
+		lineageTag: 200dfeab-25ee-4be8-b2bd-de4beeb9b3e2
+
+	measure 'Total Units Sold' =
+			
+			SUM(Products[Units_Sold])
+		formatString: #,0
+		lineageTag: eefdc9d5-41f1-4fe7-8d70-119723fde6f8
+
+	measure 'Total Reviews' =
+			
+			SUM(Products[Review_Count])
+		formatString: #,0
+		lineageTag: 69b32de7-710d-48e0-9786-c4095682e334
+
+	measure 'Median Price' =
+			
+			MEDIAN(Products[Price])
+		lineageTag: 0b0e6881-462b-498c-9728-b377f7640941
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Price Index' =
+			
+			AVERAGE(Products[Price_Index])
+		lineageTag: f30235cb-26af-4f9d-a7c9-441a4b345c04
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Sum of discount amounts.
+	measure 'Total Discount Amount' = SUM(Products[Discount_Amount])
+		formatString: #,0
+		displayFolder: Discounts
+		lineageTag: cdcb4305-9a94-454e-881c-c8cea1841d10
+
+	/// Average list price before discount.
+	measure 'Average Original Price' = AVERAGE(Products[Original_Price])
+		formatString: #,0.00
+		displayFolder: Pricing
+		lineageTag: 531dbc26-8e99-48c2-81d4-a04d3ce90f52
+
+	/// Average discount amount per observation.
+	measure 'Average Discount Amount' = AVERAGE(Products[Discount_Amount])
+		formatString: #,0.00
+		displayFolder: Discounts
+		lineageTag: 8fa6c8a5-f875-44c6-8d42-d6011f257a35
+
+	/// Highest price in the current filter context.
+	measure 'Max Price' = MAX(Products[Price])
+		formatString: #,0
+		displayFolder: Pricing
+		lineageTag: c345534b-d41a-4f2e-b66c-f5e2494a842b
+
+	/// Lowest price in the current filter context.
+	measure 'Min Price' = MIN(Products[Price])
+		formatString: #,0
+		displayFolder: Pricing
+		lineageTag: 2b71d83c-cbf3-433c-9c7d-91dfc652118f
+
+	/// Spread between highest and lowest price.
+	measure 'Price Range' = [Max Price] - [Min Price]
+		formatString: #,0
+		displayFolder: Pricing
+		lineageTag: 1ff9ae4f-1588-4267-aa48-32a8034e7d4d
+
+	/// Total revenue divided by total units sold.
+	measure 'Revenue per Unit' = DIVIDE([Total Revenue], [Total Units Sold])
+		formatString: #,0.00
+		displayFolder: Sales
+		lineageTag: 6d428292-cd10-4391-9011-d25e601e4263
+
+	/// Total revenue divided by number of observations.
+	measure 'Average Revenue per Observation' = DIVIDE([Total Revenue], [Total Observations])
+		formatString: #,0.00
+		displayFolder: Sales
+		lineageTag: 28157327-d112-4c05-95d2-9e5a1f6ebc35
+
+	/// Average units sold per observation.
+	measure 'Average Units Sold' = AVERAGE(Products[Units_Sold])
+		formatString: #,0.00
+		displayFolder: Sales
+		lineageTag: 2c9eecf9-c7b3-44a9-a6ba-e3b4c756202c
+
+	/// Revenue as a share of all revenue in the current selection.
+	measure 'Revenue Share %' = DIVIDE([Total Revenue], CALCULATE([Total Revenue], ALLSELECTED(Products)))
+		formatString: 0.0%
+		displayFolder: Sales
+		lineageTag: 1027afe2-a182-426a-b041-590ea6e5195f
+
+	/// Total reviews divided by number of observations.
+	measure 'Average Reviews per Product' = DIVIDE([Total Reviews], [Total Observations])
+		formatString: #,0.0
+		displayFolder: Customer
+		lineageTag: 2a9d9ded-57a5-49d6-9bfe-6d53ba390d64
+
+	/// Average number of features per product.
+	measure 'Average Features Count' = AVERAGE(Products[Features_Count])
+		formatString: #,0.0
+		displayFolder: Product
+		lineageTag: 613022a6-6c3a-41a8-8b5c-1fcf32579b51
+
+	/// Number of distinct brands.
+	measure 'Distinct Brands' = DISTINCTCOUNT(Products[Brand])
+		formatString: 0
+		displayFolder: Product
+		lineageTag: b6d40d58-9e37-479e-aae1-2a465efa6113
+
+	/// Number of distinct categories.
+	measure 'Distinct Categories' = DISTINCTCOUNT(Products[Category])
+		formatString: 0
+		displayFolder: Product
+		lineageTag: 6465391a-61d7-4998-9e98-4a22fb2aa2a6
+
+	measure 'Revenue YTD' = CALCULATE([Total Revenue], DATESYTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 3934bccd-3452-4165-88f8-1b523d91de05
+
+	measure 'Revenue QTD' = CALCULATE([Total Revenue], DATESQTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: dcfc868d-7bdd-43af-a693-45269bbd4ca4
+
+	measure 'Revenue MTD' = CALCULATE([Total Revenue], DATESMTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 993661e7-b6a8-41b6-bb5f-e49130ef2f7c
+
+	/// Revenue for the same period last year.
+	measure 'Revenue PY' = CALCULATE([Total Revenue], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 21bcc100-1df6-48ed-b7db-f0cf81a43a6c
+
+	/// Revenue for the previous quarter.
+	measure 'Revenue PQ' = CALCULATE([Total Revenue], DATEADD(Dim_Date[Date], -1, QUARTER))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: c6631089-90df-416a-9251-3d493ed2106e
+
+	/// Revenue for the previous month.
+	measure 'Revenue PM' = CALCULATE([Total Revenue], DATEADD(Dim_Date[Date], -1, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 22aa8d88-74e2-422e-aa5a-c04c1c68f7fb
+
+	/// Revenue for the previous day.
+	measure 'Revenue PD' = CALCULATE([Total Revenue], DATEADD(Dim_Date[Date], -1, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 550d9102-233f-41c0-a74a-24a1ba272096
+
+	/// Prior-year year-to-date revenue.
+	measure 'Revenue PYTD' = CALCULATE([Revenue YTD], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 15d46f9b-ac1c-4ed4-9ebe-12f4446cc8a8
+
+	measure 'Revenue YoY Change' = [Total Revenue] - [Revenue PY]
+		formatString: #,0;-#,0;0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: ca4d9212-0862-41b7-a7b7-cda418c0a808
+
+	measure 'Revenue YoY %' = DIVIDE([Total Revenue] - [Revenue PY], [Revenue PY])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 391f4969-4fba-46e0-b4b3-64bee2db489f
+
+	measure 'Revenue QoQ %' = DIVIDE([Total Revenue] - [Revenue PQ], [Revenue PQ])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 81f19d6f-4627-4f9c-a2cf-7286d8199865
+
+	measure 'Revenue MoM %' = DIVIDE([Total Revenue] - [Revenue PM], [Revenue PM])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: b9d7d8a3-be6f-4c96-b5a5-acd842e1dff3
+
+	measure 'Revenue YTD vs PYTD %' = DIVIDE([Revenue YTD] - [Revenue PYTD], [Revenue PYTD])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 91cd15bd-c735-4510-93a0-3d9a46d7f2d9
+
+	measure 'Revenue Rolling 3M' = CALCULATE([Total Revenue], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -3, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 53c2667d-085b-4e88-a008-b0ff75245f57
+
+	measure 'Revenue Rolling 6M' = CALCULATE([Total Revenue], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -6, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: b04e2e06-4d49-4cf6-851a-437e7dfea032
+
+	measure 'Revenue Rolling 12M' = CALCULATE([Total Revenue], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -12, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 1c7ff4ff-fa23-4ee4-8742-dacf92f0e794
+
+	measure 'Revenue Running Total' = CALCULATE([Total Revenue], FILTER(ALL(Dim_Date[Date]), Dim_Date[Date] <= MAX(Dim_Date[Date])))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: ec27d980-8b6b-4cb2-ab25-eb2f39e2f4b1
+
+	measure 'Revenue Moving Avg 3M' = DIVIDE([Revenue Rolling 3M], 3)
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 91f864f1-0729-4cf7-b968-375a7fd354e8
+
+	measure 'Revenue Moving Avg 12M' = DIVIDE([Revenue Rolling 12M], 12)
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 55d1f99b-b617-43dd-8501-0173358101d4
+
+	measure 'Revenue Last 30 Days' = CALCULATE([Total Revenue], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -30, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 33be519b-1bce-475b-b738-376fdbbfa5ae
+
+	measure 'Revenue Rolling 12M YoY %' = VAR _prior = CALCULATE([Revenue Rolling 12M], DATEADD(Dim_Date[Date], -1, YEAR)) RETURN DIVIDE([Revenue Rolling 12M] - _prior, _prior)
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: f8b66de9-25e2-4aef-8691-61c611d27b48
+
+	measure 'Revenue Share of Year %' = DIVIDE([Total Revenue], CALCULATE([Total Revenue], ALLEXCEPT(Dim_Date, Dim_Date[Year])))
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Revenue
+		lineageTag: 3ee29a6e-c9aa-4d18-8280-2666408c583c
+
+	measure 'Units YTD' = CALCULATE([Total Units Sold], DATESYTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: fbf1bcda-673c-4323-9512-af3b0736af17
+
+	measure 'Units QTD' = CALCULATE([Total Units Sold], DATESQTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: b32dec34-8feb-4be5-a7a0-c6dc6bfe34c6
+
+	measure 'Units MTD' = CALCULATE([Total Units Sold], DATESMTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 5d3580a0-ccaf-43cd-95d5-93824e837420
+
+	measure 'Units PY' = CALCULATE([Total Units Sold], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 41de0047-9ffe-461a-8615-56b03d30a9bc
+
+	measure 'Units PQ' = CALCULATE([Total Units Sold], DATEADD(Dim_Date[Date], -1, QUARTER))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: dc9331d9-c0aa-4b9d-8510-e41925385ca2
+
+	measure 'Units PM' = CALCULATE([Total Units Sold], DATEADD(Dim_Date[Date], -1, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 09f0d028-e2a5-4c51-904d-9d2e85e58f95
+
+	measure 'Units PD' = CALCULATE([Total Units Sold], DATEADD(Dim_Date[Date], -1, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 1f7fc97b-7e44-4b69-a7da-6d0218e9940f
+
+	measure 'Units PYTD' = CALCULATE([Units YTD], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 65eb93e2-adec-47cb-afc4-69174d05aca2
+
+	measure 'Units YoY Change' = [Total Units Sold] - [Units PY]
+		formatString: #,0;-#,0;0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 148b7e6e-026b-4d2a-b505-f28c2714b1a2
+
+	measure 'Units YoY %' = DIVIDE([Total Units Sold] - [Units PY], [Units PY])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 6dd7a483-d8f4-48ad-8691-801e2397e15c
+
+	measure 'Units QoQ %' = DIVIDE([Total Units Sold] - [Units PQ], [Units PQ])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: f2f04a4e-1757-4ba3-a811-ec1a2e8b3d13
+
+	measure 'Units MoM %' = DIVIDE([Total Units Sold] - [Units PM], [Units PM])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 11a20301-52e8-470c-ac42-cdc866985b31
+
+	measure 'Units YTD vs PYTD %' = DIVIDE([Units YTD] - [Units PYTD], [Units PYTD])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 4b350b99-2690-4ceb-87ec-96c4ec55035c
+
+	measure 'Units Rolling 3M' = CALCULATE([Total Units Sold], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -3, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 84deed89-6b9e-47fd-9343-64aebb70c129
+
+	measure 'Units Rolling 6M' = CALCULATE([Total Units Sold], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -6, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 641451c3-145d-489d-a8aa-06aa7870ffb8
+
+	measure 'Units Rolling 12M' = CALCULATE([Total Units Sold], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -12, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: b6d6ca74-8ed2-4ebb-97e9-4cdac500a4bb
+
+	measure 'Units Running Total' = CALCULATE([Total Units Sold], FILTER(ALL(Dim_Date[Date]), Dim_Date[Date] <= MAX(Dim_Date[Date])))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: e82a7d65-7cca-4553-ac0a-2f2f865d37f2
+
+	measure 'Units Moving Avg 3M' = DIVIDE([Units Rolling 3M], 3)
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 2968f0c9-5c23-4c71-a5c9-cf1c09130393
+
+	measure 'Units Moving Avg 12M' = DIVIDE([Units Rolling 12M], 12)
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 2d1c4d4f-581c-40c9-9e14-03f4c53a4d06
+
+	measure 'Units Last 30 Days' = CALCULATE([Total Units Sold], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -30, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 55ec5a22-b929-4cc6-a0f8-127fb9fca9be
+
+	measure 'Units Rolling 12M YoY %' = VAR _prior = CALCULATE([Units Rolling 12M], DATEADD(Dim_Date[Date], -1, YEAR)) RETURN DIVIDE([Units Rolling 12M] - _prior, _prior)
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: dff48497-a288-4ac3-bea5-6dff006b93bd
+
+	measure 'Units Share of Year %' = DIVIDE([Total Units Sold], CALCULATE([Total Units Sold], ALLEXCEPT(Dim_Date, Dim_Date[Year])))
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Units Sold
+		lineageTag: 126af205-b39b-45e5-9143-4e517989b1cf
+
+	measure 'Discount YTD' = CALCULATE([Total Discount Amount], DATESYTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 9f08a9c3-51bf-4501-a5ab-7eb8fb3f2c7d
+
+	measure 'Discount QTD' = CALCULATE([Total Discount Amount], DATESQTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: d364a190-ef8c-4a83-b188-f600be827558
+
+	measure 'Discount MTD' = CALCULATE([Total Discount Amount], DATESMTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: ca7a911a-9b00-49a8-bd88-76ab04340800
+
+	measure 'Discount PY' = CALCULATE([Total Discount Amount], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 37c00a6e-b56e-42cf-9ed5-71506ea8b8a1
+
+	measure 'Discount PQ' = CALCULATE([Total Discount Amount], DATEADD(Dim_Date[Date], -1, QUARTER))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 053488ae-29d9-46ab-bf34-4e85468f2f9c
+
+	measure 'Discount PM' = CALCULATE([Total Discount Amount], DATEADD(Dim_Date[Date], -1, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: fbf87c50-98fd-4d8e-aa01-2c9f94d2259c
+
+	measure 'Discount PD' = CALCULATE([Total Discount Amount], DATEADD(Dim_Date[Date], -1, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 94b71ec5-0691-4248-af64-51131eb2bf6a
+
+	measure 'Discount PYTD' = CALCULATE([Discount YTD], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: a3511bde-05c0-46e9-8b9b-5ac48ac2c499
+
+	measure 'Discount YoY Change' = [Total Discount Amount] - [Discount PY]
+		formatString: #,0;-#,0;0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 2d55f0db-33fc-4365-8985-c07268cbf384
+
+	measure 'Discount YoY %' = DIVIDE([Total Discount Amount] - [Discount PY], [Discount PY])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: d438e4b4-53b1-4f32-8a21-259b6caf6515
+
+	measure 'Discount QoQ %' = DIVIDE([Total Discount Amount] - [Discount PQ], [Discount PQ])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 824071da-7084-4a55-a0c8-551b643e3d47
+
+	measure 'Discount MoM %' = DIVIDE([Total Discount Amount] - [Discount PM], [Discount PM])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 16d499f4-5474-49a5-bea3-2f91e7cd177c
+
+	measure 'Discount YTD vs PYTD %' = DIVIDE([Discount YTD] - [Discount PYTD], [Discount PYTD])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: ef8d20d1-bf72-4b1d-a65f-83de4ec32b7f
+
+	measure 'Discount Rolling 3M' = CALCULATE([Total Discount Amount], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -3, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 91192a6b-5ad3-4c73-b334-d9436e731a74
+
+	measure 'Discount Rolling 6M' = CALCULATE([Total Discount Amount], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -6, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: b584adf0-2e5f-448f-a170-94aca96a4fa0
+
+	measure 'Discount Rolling 12M' = CALCULATE([Total Discount Amount], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -12, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: e3fc402c-28a2-40f1-8077-2d5b1d24b0d6
+
+	measure 'Discount Running Total' = CALCULATE([Total Discount Amount], FILTER(ALL(Dim_Date[Date]), Dim_Date[Date] <= MAX(Dim_Date[Date])))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 2090da70-1931-43e5-93a1-51f20200c332
+
+	measure 'Discount Moving Avg 3M' = DIVIDE([Discount Rolling 3M], 3)
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: d91e7cfc-f505-4b0d-89be-dbbad0d062c6
+
+	measure 'Discount Moving Avg 12M' = DIVIDE([Discount Rolling 12M], 12)
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: cc0a1ae2-a239-4610-bff1-2f931eb417ac
+
+	measure 'Discount Last 30 Days' = CALCULATE([Total Discount Amount], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -30, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 529b13f3-1608-41aa-80d5-9523b2bf62cf
+
+	measure 'Discount Rolling 12M YoY %' = VAR _prior = CALCULATE([Discount Rolling 12M], DATEADD(Dim_Date[Date], -1, YEAR)) RETURN DIVIDE([Discount Rolling 12M] - _prior, _prior)
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 982c8472-3aaa-470a-a972-c10f23fd02c9
+
+	measure 'Discount Share of Year %' = DIVIDE([Total Discount Amount], CALCULATE([Total Discount Amount], ALLEXCEPT(Dim_Date, Dim_Date[Year])))
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Discount Amount
+		lineageTag: 7c1dd32c-0f25-45b8-b6fd-115e652cbb54
+
+	measure 'Reviews YTD' = CALCULATE([Total Reviews], DATESYTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 68e7bf69-00cf-487f-9084-f9bbcc67914d
+
+	measure 'Reviews QTD' = CALCULATE([Total Reviews], DATESQTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: e8db33dd-46f1-4bf4-b34e-ac5b871be81c
+
+	measure 'Reviews MTD' = CALCULATE([Total Reviews], DATESMTD(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 2bf7f1af-6c7d-44c2-a965-a2de59f1c47d
+
+	measure 'Reviews PY' = CALCULATE([Total Reviews], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: a5eb694c-f478-4024-9db1-fe69540fb70f
+
+	measure 'Reviews PQ' = CALCULATE([Total Reviews], DATEADD(Dim_Date[Date], -1, QUARTER))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 36ebbd8e-e8a3-4483-8dee-992d6699683b
+
+	measure 'Reviews PM' = CALCULATE([Total Reviews], DATEADD(Dim_Date[Date], -1, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 594d6114-eea5-4795-b1b5-0745c43f6fbf
+
+	measure 'Reviews PD' = CALCULATE([Total Reviews], DATEADD(Dim_Date[Date], -1, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 8e579527-3bb3-48ed-94f7-330017bc6d96
+
+	measure 'Reviews PYTD' = CALCULATE([Reviews YTD], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: aa572904-fd38-4ac6-9737-d4a9e65282e8
+
+	measure 'Reviews YoY Change' = [Total Reviews] - [Reviews PY]
+		formatString: #,0;-#,0;0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: f083c988-3759-49ec-88cf-c0491428fa13
+
+	measure 'Reviews YoY %' = DIVIDE([Total Reviews] - [Reviews PY], [Reviews PY])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 162b4c9d-d48d-4e8b-862e-e698682c81c5
+
+	measure 'Reviews QoQ %' = DIVIDE([Total Reviews] - [Reviews PQ], [Reviews PQ])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 1856126c-8857-4253-96e2-cec363e2160c
+
+	measure 'Reviews MoM %' = DIVIDE([Total Reviews] - [Reviews PM], [Reviews PM])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 6e8369fc-f383-4a3e-a23c-065642ebe636
+
+	measure 'Reviews YTD vs PYTD %' = DIVIDE([Reviews YTD] - [Reviews PYTD], [Reviews PYTD])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 32212d65-971d-4b4b-9c23-2c6137fdee7a
+
+	measure 'Reviews Rolling 3M' = CALCULATE([Total Reviews], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -3, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: b57dd924-2586-4d1b-8b37-700ef31f78b4
+
+	measure 'Reviews Rolling 6M' = CALCULATE([Total Reviews], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -6, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 78f254d9-fe0f-4c18-af80-479ae618bf99
+
+	measure 'Reviews Rolling 12M' = CALCULATE([Total Reviews], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -12, MONTH))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 603b9081-2ac6-4602-9f6d-8a75e034c718
+
+	measure 'Reviews Running Total' = CALCULATE([Total Reviews], FILTER(ALL(Dim_Date[Date]), Dim_Date[Date] <= MAX(Dim_Date[Date])))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: c6ea2526-7e60-4e88-9b87-50288e4aab2b
+
+	measure 'Reviews Moving Avg 3M' = DIVIDE([Reviews Rolling 3M], 3)
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 1fff8098-19f6-4d65-8efa-02362e933d85
+
+	measure 'Reviews Moving Avg 12M' = DIVIDE([Reviews Rolling 12M], 12)
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 69f05bd1-b9ab-4bd8-86c2-683b8e2d2455
+
+	measure 'Reviews Last 30 Days' = CALCULATE([Total Reviews], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -30, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 42d21ec1-ebb0-4f8a-8a5e-87c8804d74c8
+
+	measure 'Reviews Rolling 12M YoY %' = VAR _prior = CALCULATE([Reviews Rolling 12M], DATEADD(Dim_Date[Date], -1, YEAR)) RETURN DIVIDE([Reviews Rolling 12M] - _prior, _prior)
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: 6ac73282-e157-4111-ab43-a873ec003bb7
+
+	measure 'Reviews Share of Year %' = DIVIDE([Total Reviews], CALCULATE([Total Reviews], ALLEXCEPT(Dim_Date, Dim_Date[Year])))
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Reviews
+		lineageTag: f1651f67-e3b2-4dbf-b17f-a4a74103cb93
+
+	measure 'Avg Price YTD' = CALCULATE([Average Price], DATESYTD(Dim_Date[Date]))
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Average Price
+		lineageTag: 092d24b6-64e2-491e-9790-0051f7e34286
+
+	measure 'Avg Price QTD' = CALCULATE([Average Price], DATESQTD(Dim_Date[Date]))
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Average Price
+		lineageTag: 932a29f8-825c-4aac-a410-53837f9c66dc
+
+	measure 'Avg Price MTD' = CALCULATE([Average Price], DATESMTD(Dim_Date[Date]))
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Average Price
+		lineageTag: b29c796b-ef0a-4a8f-afa6-bdff521f4abc
+
+	measure 'Avg Price PY' = CALCULATE([Average Price], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Average Price
+		lineageTag: 3e9cae42-4e04-4074-9d8b-8110bdc9935e
+
+	measure 'Avg Price PQ' = CALCULATE([Average Price], DATEADD(Dim_Date[Date], -1, QUARTER))
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Average Price
+		lineageTag: 93040170-216f-4203-bf65-82178153b1e4
+
+	measure 'Avg Price PM' = CALCULATE([Average Price], DATEADD(Dim_Date[Date], -1, MONTH))
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Average Price
+		lineageTag: 1099d74b-da64-4c52-9358-a1ab355583e1
+
+	measure 'Avg Price YoY Change' = [Average Price] - [Avg Price PY]
+		formatString: #,0.00;-#,0.00;0.00
+		displayFolder: Time Intelligence\Average Price
+		lineageTag: dc9539db-45c8-43c2-8c5c-21e2eb376fae
+
+	measure 'Avg Price YoY %' = DIVIDE([Average Price] - [Avg Price PY], [Avg Price PY])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Average Price
+		lineageTag: 4657c4f4-0ae9-452a-8200-91f3ed26c0c0
+
+	measure 'Avg Price MoM %' = DIVIDE([Average Price] - [Avg Price PM], [Avg Price PM])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Average Price
+		lineageTag: 7f1f4729-c22d-46c7-b475-e1cdd1750d47
+
+	measure 'Avg Price Rolling 3M' = CALCULATE([Average Price], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -3, MONTH))
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Average Price
+		lineageTag: 275d7597-b939-47da-94dc-af10e19b0a2b
+
+	measure 'Avg Price Rolling 12M' = CALCULATE([Average Price], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -12, MONTH))
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Average Price
+		lineageTag: 57c16094-68a7-47e8-a397-6dbbc56ad410
+
+	measure 'Avg Rating YTD' = CALCULATE([Average Rating], DATESYTD(Dim_Date[Date]))
+		formatString: 0.00
+		displayFolder: Time Intelligence\Average Rating
+		lineageTag: fd888b5e-74a8-43aa-a7ab-96d356e49e78
+
+	measure 'Avg Rating QTD' = CALCULATE([Average Rating], DATESQTD(Dim_Date[Date]))
+		formatString: 0.00
+		displayFolder: Time Intelligence\Average Rating
+		lineageTag: 119d527d-1ff7-4dd9-b38e-6e4eadf7cf70
+
+	measure 'Avg Rating MTD' = CALCULATE([Average Rating], DATESMTD(Dim_Date[Date]))
+		formatString: 0.00
+		displayFolder: Time Intelligence\Average Rating
+		lineageTag: c50c4ba9-c799-44f0-8542-6b64d3118918
+
+	measure 'Avg Rating PY' = CALCULATE([Average Rating], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: 0.00
+		displayFolder: Time Intelligence\Average Rating
+		lineageTag: f991d858-f74f-4556-82b4-24dfb1bdd254
+
+	measure 'Avg Rating PQ' = CALCULATE([Average Rating], DATEADD(Dim_Date[Date], -1, QUARTER))
+		formatString: 0.00
+		displayFolder: Time Intelligence\Average Rating
+		lineageTag: 193b65f1-73d5-4fa7-a3b7-19142b07aef3
+
+	measure 'Avg Rating PM' = CALCULATE([Average Rating], DATEADD(Dim_Date[Date], -1, MONTH))
+		formatString: 0.00
+		displayFolder: Time Intelligence\Average Rating
+		lineageTag: c78fd97c-835a-479c-87c6-342d1613f2bc
+
+	measure 'Avg Rating YoY Change' = [Average Rating] - [Avg Rating PY]
+		formatString: 0.00;-0.00;0.00
+		displayFolder: Time Intelligence\Average Rating
+		lineageTag: 2f53a0db-feab-4006-80c1-b8695409f023
+
+	measure 'Avg Rating MoM Change' = [Average Rating] - [Avg Rating PM]
+		formatString: 0.00;-0.00;0.00
+		displayFolder: Time Intelligence\Average Rating
+		lineageTag: f6e05bee-900d-4fdd-b112-e9fe927badda
+
+	measure 'Avg Rating Rolling 3M' = CALCULATE([Average Rating], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -3, MONTH))
+		formatString: 0.00
+		displayFolder: Time Intelligence\Average Rating
+		lineageTag: 779d08e5-6f4d-4164-abe6-1f28da8c24fe
+
+	measure 'Avg Rating Rolling 12M' = CALCULATE([Average Rating], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -12, MONTH))
+		formatString: 0.00
+		displayFolder: Time Intelligence\Average Rating
+		lineageTag: e48a5aee-d9e2-405a-9b3b-2870dceef9c4
+
+	measure 'Latest Data Date' = MAX(Products[Date])
+		formatString: Long Date
+		displayFolder: Time Intelligence\Utilities
+		lineageTag: 1995a97f-ec4a-4513-8905-7eaea528712b
+
+	measure 'First Data Date' = MIN(Products[Date])
+		formatString: Long Date
+		displayFolder: Time Intelligence\Utilities
+		lineageTag: 2f48871c-7653-4d00-8dad-4aced94aa851
+
+	measure 'Data Through Label' = "Data through " & FORMAT(CALCULATE(MAX(Products[Date]), ALL(Products)), "dd mmm yyyy")
+		displayFolder: Time Intelligence\Utilities
+		lineageTag: c6ad80d7-760e-482d-8946-b0f3768250ff
+
+	measure 'Days in Selection' = COUNTROWS(VALUES(Dim_Date[Date]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Utilities
+		lineageTag: dfd04191-5897-4020-aa18-24b9b3c0db05
+
+	measure 'Days With Data' = DISTINCTCOUNT(Products[Date])
+		formatString: #,0
+		displayFolder: Time Intelligence\Utilities
+		lineageTag: 0b3a5cc3-8b3e-4188-a33a-98029e5ffce1
+
+	measure 'Months With Data' = COUNTROWS(SUMMARIZE(Products, Dim_Date[Year Month Number]))
+		formatString: #,0
+		displayFolder: Time Intelligence\Utilities
+		lineageTag: 4896a5ad-f32b-4ce1-9013-97f679ad19d5
+
+	measure 'Selected Year Label' = SELECTEDVALUE(Dim_Date[Year], "All Years")
+		displayFolder: Time Intelligence\Utilities
+		lineageTag: e559fda2-5a35-4516-a545-fd6bd4bfd183
+
+	measure 'Selected Period Label' = FORMAT(MIN(Dim_Date[Date]), "dd mmm yyyy") & " - " & FORMAT(MAX(Dim_Date[Date]), "dd mmm yyyy")
+		displayFolder: Time Intelligence\Utilities
+		lineageTag: 8761041d-f8be-4bc4-9a1d-07e98e94b91d
+
+	measure 'Revenue per Day' = DIVIDE([Total Revenue], [Days With Data])
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: d2bb516f-4d8c-424d-8a6b-d3789371e861
+
+	measure 'Revenue per Month' = DIVIDE([Total Revenue], [Months With Data])
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 689ea521-dc8a-4a6c-9464-1e15bcb1b827
+
+	measure 'Units per Day' = DIVIDE([Total Units Sold], [Days With Data])
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 3c77f2f0-611f-43f5-a137-eacd4c3f8f06
+
+	measure 'Revenue Best Month' = MAXX(VALUES(Dim_Date[Year Month]), [Total Revenue])
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 6b32c4b4-0789-4d72-afe9-26087eb85f64
+
+	measure 'Revenue Worst Month' = MINX(VALUES(Dim_Date[Year Month]), [Total Revenue])
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 5e5c41d7-0047-48c6-9a15-a83b10f7c9e6
+
+	measure 'Revenue Avg Monthly' = AVERAGEX(VALUES(Dim_Date[Year Month]), [Total Revenue])
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 8b060868-326d-4e78-8e04-439eacd399ae
+
+	measure 'Revenue Best Day' = MAXX(VALUES(Dim_Date[Date]), [Total Revenue])
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 302c9cfa-d31a-4d0c-97ab-8961aac27c4a
+
+	measure 'Revenue Avg Monthly All Time' = AVERAGEX(ALL(Dim_Date[Year Month]), [Total Revenue])
+		formatString: #,0.00
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: fe35146b-e392-400b-a305-1fe07160f761
+
+	measure 'Revenue Index vs Avg Month' = DIVIDE([Total Revenue], [Revenue Avg Monthly All Time])
+		formatString: 0.00
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 1ef26bee-c58c-4d8c-bceb-1217227f250c
+
+	measure 'Revenue Weekend Share %' = DIVIDE(CALCULATE([Total Revenue], Dim_Date[Is Weekend] = TRUE()), [Total Revenue])
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 22138cdc-1325-4fd5-8074-49d1de5bde44
+
+	/// Year-to-date revenue annualized by the number of elapsed months.
+	measure 'Revenue Annualized Run Rate' = VAR _months = MONTH(MAX(Dim_Date[Date])) RETURN DIVIDE([Revenue YTD], _months) * 12
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 5bdacdbe-da89-48d0-8346-6d0b05104443
+
+	/// Year-to-date units annualized by the number of elapsed months.
+	measure 'Units Annualized Run Rate' = VAR _months = MONTH(MAX(Dim_Date[Date])) RETURN DIVIDE([Units YTD], _months) * 12
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 4359abcd-eed4-4e8f-ace7-ab13f7df3e6c
+
+	measure 'Revenue Cumulative % of Year' = DIVIDE([Revenue YTD], CALCULATE([Total Revenue], ALLEXCEPT(Dim_Date, Dim_Date[Year])))
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 2684ebfd-6d0a-4594-80b4-316b892dc15d
+
+	measure 'Revenue Latest Month' = VAR _d = CALCULATE(MAX(Products[Date]), ALL(Products)) RETURN CALCULATE([Total Revenue], ALL(Dim_Date), Dim_Date[Year Month Number] = YEAR(_d) * 100 + MONTH(_d))
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: a811d6e8-34b5-4b7d-8d27-75fc8468312d
+
+	measure 'Revenue Last 7 Days' = CALCULATE([Total Revenue], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -7, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: eaf885de-6ac8-4865-a8aa-36255c157c20
+
+	measure 'Revenue Last 90 Days' = CALCULATE([Total Revenue], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -90, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 4b81a2f7-71c5-48f3-ad66-f3402ff3b32a
+
+	measure 'Revenue Last 365 Days' = CALCULATE([Total Revenue], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -365, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 12e2a125-a77a-4fb6-b873-b78bc1ef9dce
+
+	measure 'Units Last 7 Days' = CALCULATE([Total Units Sold], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -7, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: f802bfb7-a99c-4a76-85ca-0ad28e9b7f5e
+
+	measure 'Units Last 90 Days' = CALCULATE([Total Units Sold], DATESINPERIOD(Dim_Date[Date], MAX(Dim_Date[Date]), -90, DAY))
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: e50197ef-565d-4f99-b5e2-3487b21b4350
+
+	/// Compound annual growth rate of revenue between the first and last selected years.
+	measure 'Revenue CAGR' = VAR _y0 = MIN(Dim_Date[Year]) VAR _y1 = MAX(Dim_Date[Year]) VAR _v0 = CALCULATE([Total Revenue], ALL(Dim_Date), Dim_Date[Year] = _y0) VAR _v1 = CALCULATE([Total Revenue], ALL(Dim_Date), Dim_Date[Year] = _y1) RETURN IF(_y1 > _y0 && _v0 > 0, DIVIDE(_v1, _v0) ^ (1 / (_y1 - _y0)) - 1)
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 07cf61f9-791e-4175-bd6d-9ec654a26c9f
+
+	measure 'Revenue YoY Trend' = IF(ISBLANK([Revenue YoY %]), "n/a", IF([Revenue YoY %] > 0, "Up", IF([Revenue YoY %] < 0, "Down", "Flat")))
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: decac6f9-a200-461b-a837-06911c4011a5
+
+	measure 'Revenue Share of Quarter %' = DIVIDE([Total Revenue], CALCULATE([Total Revenue], ALLEXCEPT(Dim_Date, Dim_Date[Year Quarter])))
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 3ccd99d1-ca68-404a-8af3-47b631c976e5
+
+	measure 'Units Share of Quarter %' = DIVIDE([Total Units Sold], CALCULATE([Total Units Sold], ALLEXCEPT(Dim_Date, Dim_Date[Year Quarter])))
+		formatString: 0.0%
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: 11ce4b3e-e623-44b4-ad7a-3b439536fd2d
+
+	measure 'Revenue Rolling 12M PY' = CALCULATE([Revenue Rolling 12M], DATEADD(Dim_Date[Date], -1, YEAR))
+		formatString: #,0
+		displayFolder: Time Intelligence\Analysis
+		lineageTag: ccd38f0e-2a1a-4000-8386-7c945d700139
+
+	measure 'Dashboard Title' = "Product Performance  |  " & [Data Through Label]
+		displayFolder: Dashboard
+		lineageTag: 34d0d6bf-0cfc-4bad-9a2a-44934233367a
+
+	measure 'KPI Revenue Subtitle' = IF(ISBLANK([Revenue YoY %]), "No prior-year data", FORMAT([Revenue YoY %], "+0.0%;-0.0%;0.0%") & " vs PY")
+		displayFolder: Dashboard
+		lineageTag: 16d1de0e-b17c-4c2a-bcf3-14898c9dc75e
+
+	measure 'KPI Units Subtitle' = IF(ISBLANK([Units YoY %]), "No prior-year data", FORMAT([Units YoY %], "+0.0%;-0.0%;0.0%") & " vs PY")
+		displayFolder: Dashboard
+		lineageTag: cc274dca-b245-4f95-a537-5a63629cbf8c
+
+	measure 'KPI Avg Price Subtitle' = IF(ISBLANK([Avg Price YoY %]), "No prior-year data", FORMAT([Avg Price YoY %], "+0.0%;-0.0%;0.0%") & " vs PY")
+		displayFolder: Dashboard
+		lineageTag: 32015117-184a-4dce-8661-99e0df6552db
+
+	measure 'Revenue YoY Color' = IF(ISBLANK([Revenue YoY %]), "#95A5A6", IF([Revenue YoY %] >= 0, "#16A085", "#E74C3C"))
+		displayFolder: Dashboard
+		lineageTag: aa5e3ebd-a1a8-4c69-80b7-a066df18388a
+
+	measure 'Units YoY Color' = IF(ISBLANK([Units YoY %]), "#95A5A6", IF([Units YoY %] >= 0, "#16A085", "#E74C3C"))
+		displayFolder: Dashboard
+		lineageTag: 05c750dd-a78a-491b-a3d4-982801d46349
+
+	measure 'Avg Price YoY Color' = IF(ISBLANK([Avg Price YoY %]), "#95A5A6", IF([Avg Price YoY %] >= 0, "#16A085", "#E74C3C"))
+		displayFolder: Dashboard
+		lineageTag: eb4a8154-0707-4921-80ac-642341038772
+
+	column Product_ID
+		dataType: string
+		lineageTag: 712af2e4-e13a-4d42-be99-8397a88d2ee4
+		summarizeBy: none
+		sourceColumn: Product_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Product_Name
+		dataType: string
+		lineageTag: 934eefb0-e465-45e2-8392-ee718dd1a8f0
+		summarizeBy: none
+		sourceColumn: Product_Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: cb335fee-0139-4edb-a88e-fa02ba5fa19e
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column Brand
+		dataType: string
+		lineageTag: 0a8e959b-9574-49c1-aba1-fd1a703fabff
+		summarizeBy: none
+		sourceColumn: Brand
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competitor
+		dataType: string
+		lineageTag: d9cd7937-8f16-4d20-aa2e-1f358118b5b6
+		summarizeBy: none
+		sourceColumn: Competitor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Price
+		dataType: int64
+		formatString: 0
+		lineageTag: c58bc661-7154-47c8-98d8-ef18c0a95361
+		summarizeBy: sum
+		sourceColumn: Price
+
+		annotation SummarizationSetBy = Automatic
+
+	column Original_Price
+		dataType: int64
+		formatString: 0
+		lineageTag: 48ad810c-13e2-434e-abad-14c2597b818f
+		summarizeBy: sum
+		sourceColumn: Original_Price
+
+		annotation SummarizationSetBy = Automatic
+
+	column Discount_Percent
+		dataType: double
+		lineageTag: 093926ed-8b83-49b1-a58a-8bf02d559572
+		summarizeBy: sum
+		sourceColumn: Discount_Percent
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Rating
+		dataType: double
+		lineageTag: 54201df3-7802-4137-96e3-6ba1d40d3636
+		summarizeBy: sum
+		sourceColumn: Rating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Review_Count
+		dataType: int64
+		formatString: 0
+		lineageTag: f40894a3-255a-46a2-a8a3-12bae85682f2
+		summarizeBy: sum
+		sourceColumn: Review_Count
+
+		annotation SummarizationSetBy = Automatic
+
+	column Features_Count
+		dataType: int64
+		formatString: 0
+		lineageTag: d5618bec-40c0-4976-94b4-3daccece63ba
+		summarizeBy: sum
+		sourceColumn: Features_Count
+
+		annotation SummarizationSetBy = Automatic
+
+	column Units_Sold
+		dataType: int64
+		formatString: 0
+		lineageTag: bb60ca8f-1b94-4319-bf58-743da07c4197
+		summarizeBy: sum
+		sourceColumn: Units_Sold
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ce33ffd2-656e-4030-9196-4f5430cd300c
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: b24a5524-6c42-4b94-80a6-af4026ecafea
+			defaultHierarchy: LocalDateTable_91a4888b-e8de-4457-89ce-bba2f87b8c9d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Discount_Amount
+		dataType: int64
+		formatString: 0
+		lineageTag: f80b2566-d176-48f2-8a63-703fd656698d
+		summarizeBy: sum
+		sourceColumn: Discount_Amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column Discount_Rate
+		dataType: double
+		lineageTag: 7a60a85b-42a9-43f9-adad-c3a2977daf88
+		summarizeBy: sum
+		sourceColumn: Discount_Rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Price_Index
+		dataType: double
+		lineageTag: 8a3d2441-d0d2-4760-a685-08411e57a2c6
+		summarizeBy: sum
+		sourceColumn: Price_Index
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Revenue
+		dataType: int64
+		formatString: 0
+		lineageTag: 6a700ebc-5a07-4bfe-9ea9-bc45c8eade0b
+		summarizeBy: sum
+		sourceColumn: Revenue
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Products = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\User\Documents\Codex\2026-11-06\microsoft-power-bi-plugin-power-bi-2\outputs\Products_Dashboard\cleaned_data.csv"),[Delimiter=",", Columns=17, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"Product_ID", type text}, {"Product_Name", type text}, {"Category", type text}, {"Brand", type text}, {"Competitor", type text}, {"Price", Int64.Type}, {"Original_Price", Int64.Type}, {"Discount_Percent", type number}, {"Rating", type number}, {"Review_Count", Int64.Type}, {"Features_Count", Int64.Type}, {"Units_Sold", Int64.Type}, {"Date", type date}, {"Discount_Amount", Int64.Type}, {"Discount_Rate", type number}, {"Price_Index", type number}, {"Revenue", Int64.Type}})
+				in
+				    #"Change Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,112 @@
+/// Continuous calendar table for time intelligence. Related to Products[Date].
+table Dim_Date
+	lineageTag: 9f3acc32-4048-4fed-a986-3d5d66c90b18
+	dataCategory: Time
+
+	column Year = YEAR(Dim_Date[Date])
+		dataType: int64
+		formatString: 0
+		lineageTag: 15d06d7f-7265-46e5-bc45-01a2495d3e35
+		summarizeBy: none
+
+	column 'Quarter Number' = QUARTER(Dim_Date[Date])
+		dataType: int64
+		formatString: 0
+		lineageTag: 2db540a0-7311-43a8-824b-b8cb7965223b
+		summarizeBy: none
+
+	column Quarter = "Q" & QUARTER(Dim_Date[Date])
+		dataType: string
+		lineageTag: 8be26c42-feee-4f9e-a2e2-aafe86058831
+		summarizeBy: none
+		sortByColumn: 'Quarter Number'
+
+	column 'Year Quarter' = YEAR(Dim_Date[Date]) & "-Q" & QUARTER(Dim_Date[Date])
+		dataType: string
+		lineageTag: 8ed73467-3376-4a86-8d5b-057be6073e79
+		summarizeBy: none
+
+	column 'Month Number' = MONTH(Dim_Date[Date])
+		dataType: int64
+		formatString: 0
+		lineageTag: e9630b74-e2e5-41bc-afe3-b12c563ba2ee
+		summarizeBy: none
+
+	column 'Month Name' = FORMAT(Dim_Date[Date], "MMMM")
+		dataType: string
+		lineageTag: ec9fd1e8-975a-40e7-93b3-282fc8e4d6cd
+		summarizeBy: none
+		sortByColumn: 'Month Number'
+
+	column 'Month Short' = FORMAT(Dim_Date[Date], "MMM")
+		dataType: string
+		lineageTag: d40854f0-1c3b-4aa3-8e5f-9ce94545433e
+		summarizeBy: none
+		sortByColumn: 'Month Number'
+
+	column 'Year Month Number' = YEAR(Dim_Date[Date]) * 100 + MONTH(Dim_Date[Date])
+		dataType: int64
+		formatString: 0
+		lineageTag: 626ce79c-438a-4c7d-a4a4-ff40c8c8d57d
+		summarizeBy: none
+
+	column 'Year Month' = FORMAT(Dim_Date[Date], "YYYY-MM")
+		dataType: string
+		lineageTag: 9e186cce-af5b-428e-a684-eaff4ea352b5
+		summarizeBy: none
+		sortByColumn: 'Year Month Number'
+
+	column 'Week Number' = WEEKNUM(Dim_Date[Date], 2)
+		dataType: int64
+		formatString: 0
+		lineageTag: 555d437f-b664-4fba-95de-282244aadd1b
+		summarizeBy: none
+
+	column Day = DAY(Dim_Date[Date])
+		dataType: int64
+		formatString: 0
+		lineageTag: deaf7fa1-beb9-40b7-894e-d6fb602b6452
+		summarizeBy: none
+
+	column 'Day of Week Number' = WEEKDAY(Dim_Date[Date], 2)
+		dataType: int64
+		formatString: 0
+		lineageTag: 315eab61-69ee-44ad-879d-d6b9ef708ac9
+		summarizeBy: none
+
+	column 'Day Name' = FORMAT(Dim_Date[Date], "dddd")
+		dataType: string
+		lineageTag: 0a6a81da-eb39-4093-ad9c-be40d60eca05
+		summarizeBy: none
+		sortByColumn: 'Day of Week Number'
+
+	column 'Is Weekend' = WEEKDAY(Dim_Date[Date], 2) > 5
+		dataType: boolean
+		lineageTag: 4380a201-46fc-447d-a8a5-2fc877db3110
+		summarizeBy: none
+
+	column 'Start of Month' = DATE(YEAR(Dim_Date[Date]), MONTH(Dim_Date[Date]), 1)
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 7f96cbdd-17d1-404c-a2a5-bdd45af7700a
+		summarizeBy: none
+
+	column 'End of Month' = EOMONTH(Dim_Date[Date], 0)
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: cd522759-c6b8-44bf-9197-a43092016da3
+		summarizeBy: none
+
+	column Date
+		dataType: dateTime
+		isUnique
+		isKey
+		formatString: Short Date
+		lineageTag: 48e267fa-c813-40b3-91f4-f96cb607dcec
+		summarizeBy: none
+		sourceColumn: [Date]
+
+	partition Dim_Date = calculated
+		mode: import
+		source = CALENDAR(DATE(YEAR(MIN(Products[Date])), 1, 1), DATE(YEAR(MAX(Products[Date])), 12, 31))
+
