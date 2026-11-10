@@ -1,5 +1,5 @@
 """Interactive dashboard for the synthetic Product Pricing & Competitor Analysis project."""
-from pathlib import Path
+from pathlib import Path 
 import pandas as pd
 import streamlit as st
 
@@ -47,19 +47,110 @@ input, [data-baseweb="input"] {border-radius:11px!important;}
 @media(max-width:900px){.block-container{padding-top:1.4rem}.hero-title{font-size:2rem}}
 </style>""", unsafe_allow_html=True)
 
-@st.cache_data(show_spinner=False)
-def load_data(path: Path):
-    df = pd.read_csv(path)
+
+REQUIRED_COLUMNS = [
+    'Product_ID',
+    'Product_Name',
+    'Brand',
+    'Category',
+    'Competitor',
+    'Date',
+    'Price',
+    'Original_Price',
+    'Discount_Percent',
+    'Rating',
+    'Review_Count',
+    'Units_Sold',
+    'Revenue'
+]
+
+NUMERIC_COLUMNS = [
+    'Price',
+    'Original_Price',
+    'Discount_Percent',
+    'Rating',
+    'Review_Count',
+    'Units_Sold',
+    'Revenue'
+]
+
+def prepare_data(df):
+    missing = [col for col in REQUIRED_COLUMNS if col not in df.columns]
+
+    if missing:
+        raise ValueError(
+            f"Missing required columns: {', '.join(missing)}"
+        )
+
+    df = df.copy()
     df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-    for c in ['Price','Original_Price','Discount_Percent','Rating','Review_Count','Units_Sold','Revenue']:
-        df[c] = pd.to_numeric(df[c], errors='coerce')
+
+    for col in NUMERIC_COLUMNS:
+        df[col] = pd.to_numeric(df[col], errors='coerce')
+
+    if df.empty:
+        raise ValueError("The uploaded dataset contains no records.")
+
+    if df['Date'].notna().sum() == 0:
+        raise ValueError("The dataset does not contain valid dates.")
+
+    if df['Price'].notna().sum() == 0:
+        raise ValueError("The dataset does not contain valid price values.")
+
     return df
 
-if not DATA.exists():
-    st.error(f'Cleaned dataset missing: {DATA}. Run python -m src.preprocessing first.')
-    st.stop()
 
-df = load_data(DATA)
+@st.cache_data(show_spinner=False)
+def load_data(path: Path):
+    return prepare_data(pd.read_csv(path))
+
+
+
+# ==========================================
+# DATASET MANAGEMENT AND CSV UPLOAD
+# ==========================================
+
+st.sidebar.markdown("### ◈ Dataset Management")
+
+uploaded_file = st.sidebar.file_uploader(
+    "Upload your dataset",
+    type=["csv"],
+    help="Upload a CSV containing the required product pricing columns."
+)
+
+if uploaded_file is not None:
+    try:
+        uploaded_df = pd.read_csv(uploaded_file)
+        df = prepare_data(uploaded_df)
+
+        st.sidebar.success("Custom dataset loaded successfully!")
+        st.sidebar.caption("Source: Uploaded CSV")
+
+    except Exception as e:
+        st.sidebar.error(f"Unable to load dataset: {e}")
+        st.stop()
+
+else:
+    if not DATA.exists():
+        st.error(
+            f"Default dataset missing: {DATA}. "
+            "Please upload a valid CSV dataset."
+        )
+        st.stop()
+
+    try:
+        df = load_data(DATA)
+        st.sidebar.info("Using the default project dataset.")
+    except Exception as e:
+        st.error(f"Unable to load default dataset: {e}")
+        st.stop()
+
+st.sidebar.caption(f"Total rows: {len(df):,}")
+st.sidebar.caption(f"Total columns: {len(df.columns)}")
+
+with st.sidebar.expander("Preview selected dataset"):
+    st.dataframe(df.head(5), use_container_width=True)
+
 st.markdown("""<div class="hero-eyebrow">BEYOND THE NUMBERS / ANALYTICS WORKSPACE</div>
 <h1 class="hero-title">Pricing <span>Intelligence.</span></h1>
 <div class="hero-sub">Product pricing &amp; competitor analysis · Interactive analytics dashboard</div>
