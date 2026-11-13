@@ -100,6 +100,49 @@ def prepare_data(df):
     return df
 
 
+def validate_dataset(df):
+    missing_by_column = df.isna().sum()
+    missing_cells = int(missing_by_column.sum())
+
+    duplicate_rows = int(df.duplicated().sum())
+
+    duplicate_observations = int(
+        df.duplicated(
+            subset=['Product_ID', 'Competitor', 'Date']
+        ).sum()
+    )
+
+    invalid_dates = int(df['Date'].isna().sum())
+
+    invalid_prices = int((
+        (df['Price'].notna() & (df['Price'] <= 0))
+        |
+        (df['Original_Price'].notna() & (df['Original_Price'] <= 0))
+    ).sum())
+
+    invalid_discounts = int((
+        df['Discount_Percent'].notna()
+        & ~df['Discount_Percent'].between(0, 100)
+    ).sum())
+
+    invalid_ratings = int((
+        df['Rating'].notna()
+        & ~df['Rating'].between(0, 5)
+    ).sum())
+
+    report = {
+        'Missing cells': missing_cells,
+        'Duplicate rows': duplicate_rows,
+        'Repeated product observations': duplicate_observations,
+        'Invalid dates': invalid_dates,
+        'Non-positive prices': invalid_prices,
+        'Invalid discounts': invalid_discounts,
+        'Invalid ratings': invalid_ratings
+    }
+
+    return report, missing_by_column[missing_by_column > 0]
+
+
 @st.cache_data(show_spinner=False)
 def load_data(path: Path):
     return prepare_data(pd.read_csv(path))
@@ -117,6 +160,7 @@ uploaded_file = st.sidebar.file_uploader(
     type=["csv"],
     help="Upload a CSV containing the required product pricing columns."
 )
+is_custom_dataset = uploaded_file is not None
 
 if uploaded_file is not None:
     try:
@@ -156,7 +200,48 @@ st.markdown("""<div class="hero-eyebrow">BEYOND THE NUMBERS / ANALYTICS WORKSPAC
 <div class="hero-sub">Product pricing &amp; competitor analysis · Interactive analytics dashboard</div>
 <div class="hero-bar"></div>""", unsafe_allow_html=True)
 st.info('**SIMULATED DATA**  ·  Educational project. Product observations, sales, revenue and business insights are synthetic, not live market results.', icon='ℹ️')
+# ==========================================
+# DATASET QUALITY VALIDATION REPORT
+# ==========================================
 
+validation_report, missing_columns_report = validate_dataset(df)
+
+with st.expander("🔍 Dataset Quality Report", expanded=False):
+
+    st.caption(
+        "Automatic quality checks for the currently selected dataset. "
+        "No records are automatically deleted or modified."
+    )
+
+    quality_columns = st.columns(4)
+
+    for index, (label, value) in enumerate(validation_report.items()):
+        with quality_columns[index % 4]:
+            st.metric(label, f"{value:,}")
+
+    if any(validation_report.values()):
+        st.warning(
+            "Potential data quality issues detected. "
+            "Review the results before using this dataset."
+        )
+    else:
+        st.success("Excellent! No data quality issues detected.")
+
+    if not missing_columns_report.empty:
+        st.markdown("#### Missing values by column")
+
+        missing_table = (
+            missing_columns_report
+            .rename("Missing Values")
+            .rename_axis("Column")
+            .reset_index()
+        )
+
+        st.dataframe(
+            missing_table,
+            use_container_width=True,
+            hide_index=True
+        )
 st.sidebar.markdown('### ◈ Explore data')
 st.sidebar.caption('Use the controls to refine every metric and interactive chart.')
 selected_categories = st.sidebar.multiselect('Categories', sorted(df['Category'].dropna().unique()), default=sorted(df['Category'].dropna().unique()))
@@ -255,13 +340,27 @@ with tab4:
     st.dataframe(view[columns].sort_values('Date',ascending=False),use_container_width=True,hide_index=True)
     st.download_button('Download filtered observations (CSV)',view[columns].to_csv(index=False).encode('utf-8'),file_name='filtered_product_observations.csv',mime='text/csv')
 
-with st.expander('View all 18 original static charts'):
-    imgs=sorted(CHARTS.glob('*.png')) if CHARTS.exists() else []
-    if not imgs:
-        st.info('No PNG charts found in outputs/visualizations.')
-    for i in range(0,len(imgs),2):
-        cs=st.columns(2)
-        for j,p in enumerate(imgs[i:i+2]):
-            with cs[j]:
-                st.image(str(p),caption=p.stem.replace('_',' ').title(),use_container_width=True)
+if is_custom_dataset:
+    st.info(
+        "The 18 original static charts belong to the default "
+        "project dataset. They are hidden because you are using "
+        "a custom dataset. The interactive charts above reflect "
+        "your uploaded data."
+    )
+else:
+    with st.expander('View all 18 original static charts'):
+        imgs = sorted(CHARTS.glob('*.png')) if CHARTS.exists() else []
+
+        if not imgs:
+            st.info('No PNG charts found in outputs/visualizations.')
+
+        for i in range(0, len(imgs), 2):
+            cs = st.columns(2)
+            for j, p in enumerate(imgs[i:i+2]):
+                with cs[j]:
+                    st.image(
+                        str(p),
+                        caption=p.stem.replace('_', ' ').title(),
+                        use_container_width=True
+                    )
 st.markdown('<div class="footer-note">PRICING INTELLIGENCE  ·  DATA SOURCE: CLEANED_DATA.CSV  ·  SYNTHETIC EDUCATIONAL DATA  ·  FILTERS RECALCULATE LIVE</div>', unsafe_allow_html=True)
