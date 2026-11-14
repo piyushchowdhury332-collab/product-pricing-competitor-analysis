@@ -21,3 +21,16 @@ Thumbs.db
 # Temporary files
 *.log
 *.tmp
+# Portal local database and secrets
+portal.db
+portal.db-*
+.streamlit/secrets.toml
+
+# Local backups and temporary scripts
+app_backup_before_portal.py
+fix_dashboard_text.py
+fix_encoding.py
+
+# Python cache
+__pycache__/
+pages/__pycache__/
